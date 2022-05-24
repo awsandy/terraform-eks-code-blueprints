@@ -54,5 +54,9 @@ output "cluster-sg" {
   value = aws_security_group.cluster-sg.id
 }
 
+output "eks-priv-subnets" {
+  value = module.vpc_eks.private_subnets
+}
+
 
 

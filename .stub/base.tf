@@ -8,15 +8,15 @@ terraform {
     }
     null = {
       source  = "hashicorp/null"
-      version = "= 3.1.0"
+      version = "~> 3.1.0"
     }
     external = {
       source  = "hashicorp/external"
-      version = "= 2.1.0"
+      version = "~> 2.1.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "= 2.7.1"
+      version = "~> 2.10.0"
     }
 
     helm = {
