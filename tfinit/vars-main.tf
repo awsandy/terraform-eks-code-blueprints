@@ -71,5 +71,12 @@ variable "zone" {
 }
 
 
+variable "managed_node_group_name" {
+  type        = string
+  description = "managed node group name"
+  default     = "managed_node"
+}
+
+
 
 

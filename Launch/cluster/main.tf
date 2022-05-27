@@ -88,7 +88,7 @@ module "eks_blueprints" {
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
-      node_group_name = "managed-ondemand"
+      node_group_name = var.managed_node_group_name
       instance_types  = ["m5.large"]
       subnet_ids      = data.terraform_remote_state.net.outputs.eks-priv-subnets
     }
