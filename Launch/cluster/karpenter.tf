@@ -3,7 +3,7 @@
 
 locals {
 
-vpc_name=data.terraform_remote_state.net.outputs.eks-vpv-name
+vpc_name=data.terraform_remote_state.net.outputs.eks-vpc-name
 node_group_name=  module.eks_blueprints.managed_node_groups.node_group_name
 cluster_version=var.eks_version
 amazonlinux2eks = "amazon-eks-node-${local.cluster_version}-*"
