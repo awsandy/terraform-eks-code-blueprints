@@ -1,5 +1,16 @@
 # Creates Launch templates for Karpenter
 # Launch template outputs will be used in Karpenter Provisioners yaml files. Checkout this examples/karpenter/provisioners/default_provisioner_with_launch_templates.yaml
+
+locals {
+
+vpc_name=data.terraform_remote_state.net.outputs.eks-vpv-name
+
+}
+
+
+
+
+
 module "karpenter_launch_templates" {
   source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/launch-templates?ref=v4.0.6"
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
