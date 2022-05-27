@@ -5,7 +5,7 @@ locals {
 
 vpc_name=data.terraform_remote_state.net.outputs.eks-vpv-name
 node_group_name=  module.managed_node_groups.node_group_name
-cluster_varsion=var.eks_version
+cluster_version=var.eks_version
 amazonlinux2eks = "amazon-eks-node-${local.cluster_version}-*"
 bottlerocket    = "bottlerocket-aws-k8s-${local.cluster_version}-x86_64-*"
 
