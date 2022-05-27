@@ -4,11 +4,8 @@
 locals {
 
 vpc_name=data.terraform_remote_state.net.outputs.eks-vpv-name
-
+node_group_name=  module.managed_node_groups.node_group_name
 }
-
-
-
 
 
 module "karpenter_launch_templates" {
