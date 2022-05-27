@@ -8,7 +8,6 @@ node_group_name=  var.managed_node_group_name
 cluster_version=var.eks_version
 amazonlinux2eks = "amazon-eks-node-${local.cluster_version}-*"
 bottlerocket    = "bottlerocket-aws-k8s-${local.cluster_version}-x86_64-*"
-azs          = slice(data.aws_availability_zones.az.names, 0, 3)
 }
 
 data "aws_ami" "amazonlinux2eks" {

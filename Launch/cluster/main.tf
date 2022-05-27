@@ -125,9 +125,6 @@ module "eks_blueprints" {
   }
 
 
-
-
-
   # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     mg_4 = {
