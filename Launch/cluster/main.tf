@@ -122,7 +122,7 @@ module "eks_blueprints" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
-
+  }
 
 
 
