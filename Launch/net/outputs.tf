@@ -2,6 +2,10 @@ output "eks-vpc" {
   value = module.vpc_eks.vpc_id
 }
 
+output "eks-vpc-name" {
+  value = module.vpc_eks.name
+}
+
 output "cicd-vpc" {
   value = module.vpc_cicd.vpc_id
 }

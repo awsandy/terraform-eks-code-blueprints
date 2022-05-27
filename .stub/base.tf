@@ -31,7 +31,7 @@ terraform {
 
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.7.0"
+      version = ">= 1.14.0"
     }
 
   }
