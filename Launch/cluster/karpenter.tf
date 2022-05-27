@@ -39,7 +39,9 @@ module "karpenter_launch_templates" {
     linux = {
       ami                    = data.aws_ami.amazonlinux2eks.id
       launch_template_prefix = "karpenter"
-      iam_instance_profile   = module.eks_blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      #iam_instance_profile   = module.eks_blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
+
       vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
@@ -53,7 +55,9 @@ module "karpenter_launch_templates" {
       ami                    = data.aws_ami.bottlerocket.id
       launch_template_os     = "bottlerocket"
       launch_template_prefix = "bottle"
-      iam_instance_profile   = module.eks_blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      #iam_instance_profile   = module.eks_blueprints.self_managed_node_group_iam_instance_profile_id[0]
+      iam_instance_profile   = module.eks_blueprints.managed_node_group_iam_instance_profile_id[0]
+
       vpc_security_group_ids = [module.eks_blueprints.worker_node_security_group_id]
       block_device_mappings = [
         {
