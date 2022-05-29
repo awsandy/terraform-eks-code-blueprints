@@ -8,7 +8,7 @@ cd $cur
 buildok=1
 #dirs="tfinit Launch/net Launch/iam Launch/c9net Launch/cluster Launch/nodeg Launch/lb2 Launch/cicd  Beginner/fargate Intermediate/Bottlerocket extra/nodeg2 extra/eks-cidr2"
 #dirs="tfinit Launch/net Launch/iam Launch/c9net Launch/cluster Launch/nodeg Launch/lb2 Launch/cicd  Beginner/fargate Intermediate/Bottlerocket"
-dirs="tfinit Launch/net Launch/c9net"
+dirs="tfinit Launch/net Launch/c9net Launch/cluster"
 
 for i in `echo $dirs`;do
     echo $i
