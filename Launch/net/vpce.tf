@@ -11,9 +11,6 @@
 
 
 
-
-
-
 module "vpc_endpoint_gateway" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
