@@ -165,17 +165,17 @@ module "eks_blueprints_kubernetes_addons" {
 
   # EKS Addons
   enable_amazon_eks_vpc_cni            = true
-  enable_amazon_eks_coredns            = true
+  enable_amazon_eks_coredns            = false
   enable_amazon_eks_kube_proxy         = true
-  enable_amazon_eks_aws_ebs_csi_driver = true
+  enable_amazon_eks_aws_ebs_csi_driver = false
 
   #K8s Add-ons
   enable_argocd                       = false
   enable_aws_for_fluentbit            = false
-  enable_aws_load_balancer_controller = true
+  enable_aws_load_balancer_controller = false
   enable_cluster_autoscaler           = false
-  enable_metrics_server               = true
-  enable_prometheus                   = true
+  enable_metrics_server               = false
+  enable_prometheus                   = false
   enable_karpenter = true
 }
 
