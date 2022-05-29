@@ -33,3 +33,34 @@ output "configure_kubectl" {
   description = "Configure kubectl: make sure you're logged in with the correct AWS profile and run the following command to update your kubeconfig"
   value       = module.eks_blueprints.configure_kubectl
 }
+
+
+output "eks_oidc_issuer_url" {
+  description = "The URL on the EKS cluster OIDC Issuer"
+  value       = try(split("//", module.aws_eks.cluster_oidc_issuer_url)[1], "EKS Cluster not enabled") # TODO - remove `split()` since `oidc_provider` coverss https:// removal
+}
+
+output "oidc_provider" {
+  description = "The OpenID Connect identity provider (issuer URL without leading `https://`)"
+  value       = module.aws_eks.oidc_provider
+}
+
+output "eks_oidc_provider_arn" {
+  description = "The ARN of the OIDC Provider if `enable_irsa = true`."
+  value       = module.aws_eks.oidc_provider_arn
+}
+
+output "cluster_primary_security_group_id" {
+  description = "Cluster security group that was created by Amazon EKS for the cluster. Managed node groups use this security group for control-plane-to-data-plane communication. Referred to as 'Cluster security group' in the EKS console"
+  value       = module.aws_eks.cluster_primary_security_group_id
+}
+
+output "cluster_security_group_id" {
+  description = "EKS Control Plane Security Group ID"
+  value       = module.aws_eks.cluster_security_group_id
+}
+
+output "cluster_security_group_arn" {
+  description = "Amazon Resource Name (ARN) of the cluster security group"
+  value       = module.aws_eks.cluster_security_group_arn
+}
