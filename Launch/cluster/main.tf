@@ -122,6 +122,14 @@ module "eks_blueprints" {
       type                          = "ingress"
       source_cluster_security_group = true
     }
+    ingress_cluster_to_def_vpc = {
+      description                   = "Cluster API to def vpc"
+      protocol                      = "tcp"
+      from_port                     = 443
+      to_port                       = 443
+      type                          = "ingress"
+      cidr_blocks      = ["172.31.0.0/16"]
+    }
   }
 
 
