@@ -78,7 +78,7 @@ module "eks_blueprints" {
   cluster_version = var.eks_version
 
   # Step 1. Set cluster API endpoint both private and public
-  cluster_endpoint_public_access  = true
+  cluster_endpoint_public_access  = false
   cluster_endpoint_private_access = true
 
   # Step 2. Change cluster endpoint to private only, comment out the above lines and uncomment the below lines.
@@ -134,24 +134,24 @@ module "eks_blueprints" {
     }
   }
 
-  fargate_profiles = {
-    default = {
-      fargate_profile_name = "fargate1"
-      fargate_profile_namespaces = [
-        {
-          namespace = "fargate1"
-          k8s_labels = {
-            Environment = "preprod"
-            Zone        = "dev"
-            env         = "fargate"
-          }
-      }]
-      subnet_ids = data.terraform_remote_state.net.outputs.eks-priv-subnets
-      additional_tags = {
-        ExtraTag = "Fargate"
-      }
-    },
-  }
+  #fargate_profiles = {
+  #  default = {
+  #    fargate_profile_name = "fargate1"
+  #    fargate_profile_namespaces = [
+  #      {
+  #        namespace = "fargate1"
+  #        k8s_labels = {
+  #          Environment = "preprod"
+  #          Zone        = "dev"
+  #          env         = "fargate"
+  #        }
+  #    }]
+  #    subnet_ids = data.terraform_remote_state.net.outputs.eks-priv-subnets
+  #    additional_tags = {
+  #      ExtraTag = "Fargate"
+  #    }
+  #  },
+  #}
 
 
 
@@ -164,9 +164,9 @@ module "eks_blueprints_kubernetes_addons" {
   eks_cluster_id = module.eks_blueprints.eks_cluster_id
 
   # EKS Addons
-  enable_amazon_eks_vpc_cni            = true
+  enable_amazon_eks_vpc_cni            = false
   enable_amazon_eks_coredns            = false
-  enable_amazon_eks_kube_proxy         = true
+  enable_amazon_eks_kube_proxy         = false
   enable_amazon_eks_aws_ebs_csi_driver = false
 
   #K8s Add-ons
@@ -176,7 +176,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_cluster_autoscaler           = false
   enable_metrics_server               = false
   enable_prometheus                   = false
-  enable_karpenter = true
+  enable_karpenter = false
 }
 
 
