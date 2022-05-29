@@ -47,7 +47,7 @@ output "oidc_provider" {
 
 output "eks_oidc_provider_arn" {
   description = "The ARN of the OIDC Provider if `enable_irsa = true`."
-  value       = module.eks_blueprints.oidc_provider_arn
+  value       = module.eks_blueprints.eks_oidc_provider_arn
 }
 
 output "cluster_primary_security_group_id" {
