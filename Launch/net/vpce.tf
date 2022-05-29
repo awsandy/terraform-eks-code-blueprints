@@ -16,15 +16,15 @@ module "vpc_endpoint_gateway" {
   version = "v3.2.0"
 
   create = true
-  vpc_id = module.aws_vpc.vpc_id
+  vpc_id = module.vpc_eks.vpc_id
 
   endpoints = {
     s3 = {
       service      = "s3"
       service_type = "Gateway"
       route_table_ids = flatten([
-        module.aws_vpc.intra_route_table_ids,
-      module.aws_vpc.private_route_table_ids])
+        module.vpc_eks.intra_route_table_ids,
+      module.vpc_eks.private_route_table_ids])
       tags = { Name = "s3-vpc-Gateway" }
     },
   }
@@ -35,10 +35,10 @@ module "vpc_endpoints" {
   source  = "terraform-aws-modules/vpc/aws//modules/vpc-endpoints"
   version = "v3.2.0"
   create  = true
-  vpc_id  = module.aws_vpc.vpc_id
+  vpc_id  = module.vpc_eks.vpc_id
   security_group_ids = [
   data.aws_security_group.default.id]
-  subnet_ids = module.aws_vpc.intra_subnets
+  subnet_ids = module.vpc_eks.intra_subnets
 
   endpoints = {
     ssm = {
