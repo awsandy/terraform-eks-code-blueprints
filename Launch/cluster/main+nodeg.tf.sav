@@ -160,7 +160,7 @@ module "eks_blueprints" {
       # SSH ACCESS Optional - Recommended to use SSM Session manager
       remote_access         = true
       ec2_ssh_key           = data.aws_key_pair.keypair.key_name
-      ssh_security_group_id = ""
+      ssh_security_group_id = module.eks_blueprints.module.aws_eks.aws_security_group.node[0].id
 
       additional_tags = {
         ExtraTag    = "m5x-on-demand"
