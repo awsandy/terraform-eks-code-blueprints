@@ -102,7 +102,6 @@ module "eks_blueprints" {
 
   managed_node_groups = {
 
-
     # Starts ANOTHER Managed Node groups with Launch templates using AMI TYPE
     mng_lt = {
       # Node Group configuration
@@ -158,19 +157,17 @@ module "eks_blueprints" {
 
       additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
 
-
+      # SSH ACCESS Optional - Recommended to use SSM Session manager
+      remote_access         = true
+      ec2_ssh_key           = data.aws_key_pair.keypair.key_name
+      ssh_security_group_id = [aws_security_group.allow_ssh.id]
 
       additional_tags = {
         ExtraTag    = "m5x-on-demand"
         Name        = "m5x-on-demand"
         subnet_type = "private"
       }
-    } # end launch_template_config
-
-    # SSH ACCESS Optional - Recommended to use SSM Session manager
-    remote_access         = true
-    ec2_ssh_key           = data.aws_key_pair.keypair.key_name
-    ssh_security_group_id = [aws_security_group.allow_ssh.id]
+    }
     
 
   }
