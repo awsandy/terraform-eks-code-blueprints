@@ -1,3 +1,3 @@
-data "aws_key_pair" "example" {
-  key_name = "terraform-ec2"
+data "aws_key_pair" "keypair" {
+  key_name = "terraform-andyt"
 }
