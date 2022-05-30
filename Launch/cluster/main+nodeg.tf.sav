@@ -62,6 +62,15 @@ module "eks_blueprints" {
       ipv6_cidr_blocks = ["::/0"]
     }
 
+    ingress_ssh_def = {
+      description = "ssh from def subnet - would be better with vpce SG"
+      protocol    = "tcp"
+      from_port   = 22
+      to_port     = 22
+      type        = "ingress"
+      cidr_blocks = ["172.31.0.0/16"]
+    }
+
     # for SSM allow incoming 443
     ingress_https_all = {
       description = "https from infra subnet - would be better with vpce SG"
