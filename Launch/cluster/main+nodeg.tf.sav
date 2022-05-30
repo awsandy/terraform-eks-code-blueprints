@@ -147,8 +147,8 @@ module "eks_blueprints" {
       additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
 
       # SSH ACCESS Optional - Recommended to use SSM Session manager
-      remote_access         = false
-      ec2_ssh_key           = ""
+      remote_access         = true
+      ec2_ssh_key           = data.aws_key_pair.keypair.key_name
       ssh_security_group_id = ""
 
       additional_tags = {
