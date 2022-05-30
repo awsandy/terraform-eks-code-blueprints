@@ -1,14 +1,3 @@
-# autoscaling-y
-# ec2-y,ec2messages-y
-# ecr.api-y, ecr.dkr-y
-# elasticloadbalancing-y
-# logs-y, s3-y 
-# ssm-y , ssmmessages
-# sts -y 
-# kms-y
-
-# ssmmessages
-
 
 
 module "vpc_endpoint_gateway" {
@@ -36,9 +25,9 @@ module "vpc_endpoints" {
   version = "v3.2.0"
   create  = true
   vpc_id  = module.vpc_eks.vpc_id
-  security_group_ids = [
-  data.aws_security_group.default.id]
-  subnet_ids = module.vpc_eks.intra_subnets
+  security_group_ids = [data.aws_security_group.default.id]
+  #subnet_ids = module.vpc_eks.intra_subnets
+  subnet_ids = [aws_subnet.subnet-i1.id,aws_subnet.subnet-i2.id,aws_subnet.subnet-i3.id]
 
   endpoints = {
     ssm = {

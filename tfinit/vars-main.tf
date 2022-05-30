@@ -31,7 +31,7 @@ variable "no-output" {
 
 variable "cidr_block" {
   type        = string
-  default     = "10.0.0.0/20"
+  default     = "10.0.0.0/16"
   description = "The CIDR block for the VPC."
 }
 
