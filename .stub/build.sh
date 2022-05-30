@@ -1,3 +1,5 @@
+terraform fmt
+terraform validate
 tobuild=$(grep 'data\|resource' *.tf | grep '"' | grep  '{' | cut -f2 -d ':' | grep -v '#\|=' | grep aws_ |  wc -l)
 rc=0
 terraform state list 2> /dev/null | grep aws_ > /dev/null
