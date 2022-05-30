@@ -1,0 +1,18 @@
+  fargate_profiles = {
+    default = {
+      fargate_profile_name = "fargate1"
+      fargate_profile_namespaces = [
+        {
+          namespace = "fargate1"
+          k8s_labels = {
+            Environment = "preprod"
+            Zone        = "dev"
+            env         = "fargate"
+          }
+      }]
+     subnet_ids = data.terraform_remote_state.net.outputs.eks-priv-subnets
+      additional_tags = {
+        ExtraTag = "Fargate"
+       }
+     },
+  }

@@ -1,0 +1,220 @@
+locals {
+
+  policy_arn_prefix = "arn:aws:iam::aws:policy"
+  ec2_principal     = "ec2.amazonaws.com"
+}
+
+  # EKS MANAGED NODE GROUPS
+  #managed_node_groups = {
+  #  mg_4 = {
+  #    node_group_name = var.managed_node_group_name
+  #    instance_types  = ["m5.large"]
+  #    subnet_ids      = data.terraform_remote_state.net.outputs.eks-priv-subnets
+  #  }
+  #}
+
+# EKS MANAGED NODE GROUPS
+  managed_node_groups = {
+    # Managed Node groups with minimum config
+    mg5 = {
+      node_group_name = "mg5a"
+      instance_types  = ["m5a.large"]
+      min_size        = "1"
+      create_iam_role = false # Changing `create_iam_role=false` to bring your own IAM Role
+      iam_role_arn    = aws_iam_role.managed_ng.arn
+      disk_size       = 100 # Disk size is used only with Managed Node Groups without Launch Templates
+      update_config = [{
+        max_unavailable_percentage = 30
+      }]
+    },
+    # Managed Node groups with Launch templates using AMI TYPE
+    mng_lt = {
+      # Node Group configuration
+      node_group_name = "mng_lt" # Max 40 characters for node group name
+
+      ami_type               = "AL2_x86_64"  # Available options -> AL2_x86_64, AL2_x86_64_GPU, AL2_ARM_64, CUSTOM
+      release_version        = ""            # Enter AMI release version to deploy the latest AMI released by AWS. Used only when you specify ami_type
+      capacity_type          = "ON_DEMAND"   # ON_DEMAND or SPOT
+      instance_types         = ["m5a.large"] # List of instances used only for SPOT type
+      format_mount_nvme_disk = true          # format and mount NVMe disks ; default to false
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+
+      enable_monitoring = true
+      eni_delete        = true
+      public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
+
+      # pre_userdata can be used in both cases where you provide custom_ami_id or ami_type
+      pre_userdata = <<-EOT
+        yum install -y amazon-ssm-agent
+        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+      EOT
+
+      # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+      # e.g., k8s_taints = [{key= "spot", value="true", "effect"="NO_SCHEDULE"}]
+      k8s_taints = []
+
+      # Node Labels can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+      k8s_labels = {
+        Environment = "preprod"
+        Zone        = "dev"
+        Runtime     = "docker"
+      }
+
+      # Node Group scaling configuration
+      desired_size = 1
+      max_size     = 3
+      min_size     = 1
+
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 100
+        }
+      ]
+
+      # Node Group network configuration
+      subnet_type = "private" # public or private - Default uses the private subnets used in control plane if you don't pass the "subnet_ids"
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+
+      additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+
+      # SSH ACCESS Optional - Recommended to use SSM Session manager
+      remote_access         = false
+      ec2_ssh_key           = ""
+      ssh_security_group_id = ""
+
+      additional_tags = {
+        ExtraTag    = "m5x-on-demand"
+        Name        = "m5x-on-demand"
+        subnet_type = "private"
+      }
+    }
+    # Managed Node groups with Launch templates using CUSTOM AMI with ContainerD runtime
+    mng_custom_ami = {
+      # Node Group configuration
+      node_group_name = "mng_custom_ami" # Max 40 characters for node group name
+
+      # custom_ami_id is optional when you provide ami_type. Enter the Custom AMI id if you want to use your own custom AMI
+      custom_ami_id  = data.aws_ami.amazonlinux2eks.id
+      capacity_type  = "ON_DEMAND"   # ON_DEMAND or SPOT
+      instance_types = ["m5a.large"] # List of instances used only for SPOT type
+
+      # Launch template configuration
+      create_launch_template = true              # false will use the default launch template
+      launch_template_os     = "amazonlinux2eks" # amazonlinux2eks or bottlerocket
+
+      # pre_userdata will be applied by using custom_ami_id or ami_type
+      pre_userdata = <<-EOT
+        yum install -y amazon-ssm-agent
+        systemctl enable amazon-ssm-agent && systemctl start amazon-ssm-agent
+      EOT
+
+      # post_userdata will be applied only by using custom_ami_id
+      post_userdata = <<-EOT
+        echo "Bootstrap successfully completed! You can further apply config or install to run after bootstrap if needed"
+      EOT
+
+      # kubelet_extra_args used only when you pass custom_ami_id;
+      # --node-labels is used to apply Kubernetes Labels to Nodes
+      # --register-with-taints used to apply taints to Nodes
+      # e.g., kubelet_extra_args='--node-labels=WorkerType=SPOT,noderole=spark --register-with-taints=spot=true:NoSchedule --max-pods=58',
+      kubelet_extra_args = "--node-labels=WorkerType=SPOT,noderole=spark --register-with-taints=test=true:NoSchedule --max-pods=20"
+
+      # bootstrap_extra_args used only when you pass custom_ami_id. Allows you to change the Container Runtime for Nodes
+      # e.g., bootstrap_extra_args="--use-max-pods false --container-runtime containerd"
+      bootstrap_extra_args = "--use-max-pods false --container-runtime containerd"
+
+      # Taints can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+      k8s_taints = []
+
+      # Node Labels can be applied through EKS API or through Bootstrap script using kubelet_extra_args
+      k8s_labels = {
+        Environment = "preprod"
+        Zone        = "dev"
+        Runtime     = "containerd"
+      }
+
+      enable_monitoring = true
+      eni_delete        = true
+      public_ip         = false # Use this to enable public IP for EC2 instances; only for public subnets used in launch templates
+
+      # Node Group scaling configuration
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
+
+      block_device_mappings = [
+        {
+          device_name = "/dev/xvda"
+          volume_type = "gp3"
+          volume_size = 150
+        }
+      ]
+
+      # Node Group network configuration
+      subnet_type = "private" # public or private - Default uses the private subnets used in control plane if you don't pass the "subnet_ids"
+      subnet_ids  = []        # Defaults to private subnet-ids used by EKS Control plane. Define your private/public subnets list with comma separated subnet_ids  = ['subnet1','subnet2','subnet3']
+
+      additional_iam_policies = [] # Attach additional IAM policies to the IAM role attached to this worker group
+
+      # SSH ACCESS Optional - Recommended to use SSM Session manager
+      remote_access         = false
+      ec2_ssh_key           = ""
+      ssh_security_group_id = ""
+
+      additional_tags = {
+        ExtraTag    = "mng-custom-ami"
+        Name        = "mng-custom-ami"
+        subnet_type = "private"
+      }
+    }
+  }
+
+
+
+
+
+#---------------------------------------------------------------
+# Custom IAM roles for Node Groups
+#---------------------------------------------------------------
+data "aws_iam_policy_document" "managed_ng_assume_role_policy" {
+  statement {
+    sid = "EKSWorkerAssumeRole"
+
+    actions = [
+      "sts:AssumeRole",
+    ]
+    principals {
+      type        = "Service"
+      identifiers = [local.ec2_principal]
+    }
+  }
+}
+
+resource "aws_iam_role" "managed_ng" {
+  name                  = "managed-node-role"
+  description           = "EKS Managed Node group IAM Role"
+  assume_role_policy    = data.aws_iam_policy_document.managed_ng_assume_role_policy.json
+  path                  = "/"
+  force_detach_policies = true
+  managed_policy_arns = ["${local.policy_arn_prefix}/AmazonEKSWorkerNodePolicy",
+    "${local.policy_arn_prefix}/AmazonEKS_CNI_Policy",
+    "${local.policy_arn_prefix}/AmazonEC2ContainerRegistryReadOnly",
+  "${local.policy_arn_prefix}/AmazonSSMManagedInstanceCore"]
+}
+
+resource "aws_iam_instance_profile" "managed_ng" {
+  name = "managed-node-instance-profile"
+  role = aws_iam_role.managed_ng.name
+  path = "/"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+
