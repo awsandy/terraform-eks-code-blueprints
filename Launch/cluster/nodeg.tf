@@ -12,7 +12,8 @@ locals {
   #    subnet_ids      = data.terraform_remote_state.net.outputs.eks-priv-subnets
   #  }
   #}
-
+module "eks_blueprints" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints?ref=v4.0.6"
 # EKS MANAGED NODE GROUPS
   managed_node_groups = {
     # Managed Node groups with minimum config
@@ -173,7 +174,7 @@ locals {
       }
     }
   }
-
+}
 
 
 

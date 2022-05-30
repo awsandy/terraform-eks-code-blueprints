@@ -20,14 +20,3 @@ data "aws_ami" "bottlerocket" {
   }
   owners = ["amazon"]
 }
-
-data "aws_ami" "amazonlinux2eks" {
-  most_recent = true
-
-  filter {
-    name   = "name"
-    values = ["amazon-eks-node-${local.cluster_version}-*"]
-  }
-
-  owners = ["amazon"]
-}
