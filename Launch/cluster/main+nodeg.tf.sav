@@ -115,9 +115,9 @@ module "eks_blueprints" {
   managed_node_groups = {
       mg_4 = {
         node_group_name = "managed-ondemand"
-        instance_types  = ["m5.large"]
+        instance_types  = ["m5a.large"]
         min_size        = "1"
-        subnet_ids      = module.aws_vpc.private_subnets
+        subnet_ids      = data.terraform_remote_state.net.outputs.eks-priv-subnets
 
         # SSH ACCESS Optional - Recommended to use SSM Session manager
         remote_access         = true
