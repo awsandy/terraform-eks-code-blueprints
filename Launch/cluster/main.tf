@@ -61,6 +61,30 @@ module "eks_blueprints" {
       cidr_blocks      = ["0.0.0.0/0"]
       ipv6_cidr_blocks = ["::/0"]
     }
+    # for SSM allow incoming 443
+    ingress_https_all = {
+      description = "https from infra subnet - would be better with vpce SG"
+      protocol    = "tcp"
+      from_port   = 443
+      to_port     = 443
+      type        = "ingress"
+      cidr_blocks      = ["100.64.0.0/16"]
+    }
+    #Recommended outbound traffic for Node groups
+    egress_all = {
+      description      = "Node all egress"
+      protocol         = "-1"
+      from_port        = 0
+      to_port          = 0
+      type             = "egress"
+      cidr_blocks      = ["0.0.0.0/0"]
+      ipv6_cidr_blocks = ["::/0"]
+    }
+
+
+
+
+
     # Allows Control Plane Nodes to talk to Worker nodes on all ports. Added this to simplify the example and further avoid issues with Add-ons communication with Control plane.
     # This can be restricted further to specific port based on the requirement for each Add-on e.g., metrics-server 4443, spark-operator 8080, karpenter 8443 etc.
     # Change this according to your security requirements if needed
@@ -73,6 +97,7 @@ module "eks_blueprints" {
       source_cluster_security_group = true
     }
   }
+  # this is the secondary cluster SG (additional one)
   cluster_security_group_additional_rules = {
     # EKS nodes
     ingress_cluster_to_def_vpc = {

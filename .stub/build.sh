@@ -12,7 +12,19 @@ terraform init -no-color -force-copy > /dev/null
 
 echo "Terraform Plan"
 terraform plan -out tfplan -no-color > /dev/null
+
+# more control
+#terraform apply -target="module.aws_vpc"
+#terraform apply -target="module.eks_blueprints"
+#terraform apply -target="module.eks_blueprints_kubernetes_addons"
+#terraform apply -target="module.aws_load_balancer_controller"
+#terraform apply -target="module.ingress_nginx"
+
+
 terraform apply tfplan -no-color && terraform init -force-copy -no-color > /dev/null
+
+
+
 rc=$(terraform state list | grep aws_ | wc -l)
 
 if [ $rc -lt $tobuild ]; then echo "only $rc in tf state expected $tobuild .. exit .." && exit; fi
