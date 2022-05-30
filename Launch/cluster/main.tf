@@ -70,6 +70,14 @@ module "eks_blueprints" {
       type        = "ingress"
       cidr_blocks      = ["100.64.0.0/16"]
     }
+    ingress_ssh_def = {
+      description = "ssh from def subnet - would be better with vpce SG"
+      protocol    = "tcp"
+      from_port   = 22
+      to_port     = 22
+      type        = "ingress"
+      cidr_blocks = ["172.31.0.0/16"]
+    }
     #Recommended outbound traffic for Node groups
     egress_all = {
       description      = "Node all egress"
