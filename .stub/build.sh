@@ -6,6 +6,7 @@ terraform state list 2> /dev/null | grep aws_ > /dev/null
 if [ $? -eq 0 ]; then
         rc=$(terraform state list | grep aws_ | wc -l ) 
 fi
+echo "to build=$tobuild built=$rc"
 if [ $rc -ge $tobuild ]; then echo "$rc in tf state expected $tobuild so skipping build ..." && continue; fi
 rm -rf .terraform* backend.tf
 terraform init -no-color -force-copy > /dev/null
